@@ -1,0 +1,45 @@
+name: Laravel
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  laravel:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2 #https://github.com/shivammathur/setup-php
+        with:
+          php-version: '8.1'
+          extensions: mbstring, dom, fileinfo
+          coverage: xdebug #optional
+      - uses: getong/mariadb-action@v1.1
+        with:
+          host port: 3308 # Optional, default value is 3306. The port of host
+          #container port: 3307 # Optional, default value is 3306. The port of container
+          #character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          #collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mariadb version: '10.3' # Optional, default value is "latest". The version of the MariaDB
+          mysql database: 'testbench' # Optional, default value is "test". The specified database which will be create
+          mysql user: 'default' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: 'secret' # Required if "mysql user" exists. The password for the "mysql user"
+      - name: Redis Server in GitHub Actions
+        uses: supercharge/redis-github-action@1.1.0
+        with:
+          # Redis version to use
+          redis-version: 6 # optional, default is latest
+      - name: Install Dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: a151e48d81d4feaf5959e5756c934a66946c158c46a27059006a2e688308bfa7
+        with:
+          coverageCommand: vendor/bin/pest --coverage --ci
+          debug: false
