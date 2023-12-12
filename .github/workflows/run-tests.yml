@@ -2,7 +2,7 @@ name: Laravel
 
 on:
   push:
-    branches: [ 1.x]
+    branches: [ 1.x ]
   pull_request:
     branches: [ 1.x ]
 
