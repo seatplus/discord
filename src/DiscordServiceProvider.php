@@ -5,6 +5,11 @@ namespace Seatplus\Discord;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\SocialiteManager;
+use Seatplus\BroadcastHub\BroadcastRepository;
+use Seatplus\BroadcastHub\Events\NotificationFailed;
+use Seatplus\BroadcastHub\Listeners\NotificationFailedListener;
+use Seatplus\Discord\Client\DiscordClient;
+use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Commands\NicknameCommand;
 use Seatplus\Discord\Commands\SquadSyncCommand;
 use Seatplus\Tribe\TribeRepository;
@@ -36,10 +41,18 @@ class DiscordServiceProvider extends ServiceProvider
         // Add commands
         $this->addCommands();
 
+        $implementation = new Discord();
+
         $tribe = app(TribeRepository::class);
-        $tribe->add(new Discord());
+        $tribe->add($implementation);
+
+        $broadcast_hub = app(BroadcastRepository::class);
+        $broadcast_hub->addBroadcaster($implementation);
 
         Event::listen(SocialiteWasCalled::class, DiscordExtendSocialite::class.'@handle');
+
+        // set defaults for dependency injection
+        $this->setDefaults();
 
     }
 
@@ -56,16 +69,7 @@ class DiscordServiceProvider extends ServiceProvider
         // Slap in the Telegram Socialite Provider
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
 
-        $socialite->extend(
-            'discord',
-            function ($app) use ($socialite) {
-                $config = $app['config']['services.discord'];
-
-                return $socialite->buildProvider(Provider::class, $config);
-            }
-        );
-
-
+        $socialite->extend('discord', fn($app) => $socialite->buildProvider(Provider::class, $app['config']['services.discord']));
     }
 
     private function mergeConfigurations()
@@ -96,5 +100,21 @@ class DiscordServiceProvider extends ServiceProvider
                 SquadSyncCommand::class,
             ]);
         }
+    }
+
+    private function setDefaults()
+    {
+        $guild_id = Discord::getGuildId();
+
+        $this->app->when(Guild::class)
+            ->needs('$guild_id')
+            ->give($guild_id);
+
+        $token = $this->app->make('config')->get('services.discord.bot_token');
+
+        $this->app->when(DiscordClient::class)
+            ->needs('$token')
+            ->give($token);
+
     }
 }

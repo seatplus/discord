@@ -2,18 +2,23 @@
 
 namespace Seatplus\Discord\Services\Members;
 
+use Seatplus\Discord\Client\Guild;
+
 class UpdateMemberAttribute
 {
-    private \Seatplus\Discord\Client\Member $client;
 
-    public function __construct($guild_id, $user_id)
+    private Guild $guild_client;
+
+    public function __construct(
+        private string $user_id
+    )
     {
-        $this->client = new \Seatplus\Discord\Client\Member($guild_id, $user_id);
+        $this->guild_client = app(Guild::class);
     }
 
     private function execute(array $attributes)
     {
-        $this->client->update([
+        $this->guild_client->modifyGuildMember($this->user_id, [
             ...$attributes
         ]);
     }

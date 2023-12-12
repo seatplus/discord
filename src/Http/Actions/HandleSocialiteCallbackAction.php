@@ -5,7 +5,7 @@ namespace Seatplus\Discord\Http\Actions;
 use Laravel\Socialite\Facades\Socialite;
 use Seatplus\Connector\Models\Settings;
 use Seatplus\Connector\Models\User;
-use Seatplus\Discord\Client\Member;
+use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Discord;
 
 class HandleSocialiteCallbackAction
@@ -61,8 +61,8 @@ class HandleSocialiteCallbackAction
 
     private function kickUser(User $user)
     {
-        $client = new Member($this->guild_id, $user->connector_id);
-        $client->delete();
+
+        app(Guild::class)->removeGuildMember($user->connector_id);
     }
 
 }

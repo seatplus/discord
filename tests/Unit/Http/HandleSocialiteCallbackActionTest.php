@@ -46,6 +46,9 @@ it('creates user', function () {
 
 it('kicks old user', function () {
 
+    // create a binding scoped singleton
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild('123456789'));
+
     Http::fake();
 
     Http::assertNothingSent();
@@ -54,10 +57,6 @@ it('kicks old user', function () {
 
     $socialite_user->shouldReceive('getId')
         ->andReturn('123456789');
-
-    // set guild_id to 123456789
-    Discord::getSettings()->getValue('guild_id');
-    Discord::getSettings()->setValue('guild_id', '123456789');
 
     // create user and act as that user
     $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());

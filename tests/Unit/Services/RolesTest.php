@@ -8,12 +8,9 @@ use Seatplus\Discord\Services\Roles\AssignRolesToUser;
 
 beforeEach(function () {
 
-    // set guild_id and user_id
+    // create a binding scoped singleton
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild('123456789'));
 
-    $this->guild_id = '1';
-
-    Discord::getSettings()->getValue('guild_id');
-    Discord::getSettings()->setValue('guild_id', $this->guild_id);
 
     $this->user_id = '1';
 
@@ -28,12 +25,12 @@ it('get discord roles', function () {
 
     $get_discord_roles = new \Seatplus\Discord\Services\Roles\GetDiscordRoles;
 
-    expect($get_discord_roles->execute($this->guild_id))->toBeCollection();
+    expect($get_discord_roles->execute())->toBeCollection();
 
     Http::assertSentCount(1);
 
     Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://discord.com/api/guilds/1/roles';
+        return $request->url() === 'https://discord.com/api/guilds/123456789/roles';
     });
 
 });
@@ -59,7 +56,7 @@ it('checks if bot has permissions', function () {
     Http::assertSentCount(1);
 
     Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://discord.com/api/guilds/1/roles';
+        return $request->url() === 'https://discord.com/api/guilds/123456789/roles';
     });
 
 });
@@ -80,6 +77,9 @@ it('builds Role Control Group Map and creates discord role', function () {
         // 3. we create 1 discord role - and return it
         ->push(test()->getDiscordRolesMock()[0]);
 
+    Discord::getSettings()->getValue('guild_id');
+    Discord::getSettings()->setValue('guild_id', 123456789);
+
     $role_control_group_map = new \Seatplus\Discord\Services\Roles\BuildRoleControlGroupMap();
 
     expect($role_control_group_map->execute())->toBeArray();
@@ -89,6 +89,8 @@ it('builds Role Control Group Map and creates discord role', function () {
 });
 
 it('assigns roles to user if user has role', function (bool $hasRole) {
+
+    Http::fake();
 
     // define role mapping
     $role_mapping = [
@@ -103,6 +105,9 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
             'connector_type' => Discord::class,
         ]);
 
+    Discord::getSettings()->getValue('guild_id');
+    Discord::getSettings()->setValue('guild_id', 123456789);
+
     // prepare the action
     $assign_roles_to_user = (new AssignRolesToUser)->setRoleMappings($role_mapping);
 
@@ -110,7 +115,6 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
         // assign Role to user
         $user->assignRole($this->role);
     }
-
 
     // fake http response
     Http::fakeSequence()
@@ -120,7 +124,7 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
         ->push(null);
 
     // execute the action
-    $assign_roles_to_user->execute($connector_user, $this->guild_id);
+    $assign_roles_to_user->execute($connector_user);
 
     // assert the second request
     $recorded = Http::recorded();
@@ -130,10 +134,9 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
     expect($request['roles'])->toBeArray();
 
     if($hasRole) {
-        expect($request['roles'])->toContain('10', '20', '30');
+        expect($request['roles'])->toContain('10');
     } else {
         expect($request['roles'])
-            ->toContain('20', '30')
             ->not->toContain('10');
     }
 

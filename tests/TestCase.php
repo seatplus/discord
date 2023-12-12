@@ -4,12 +4,15 @@ namespace Seatplus\Discord\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Seatplus\Auth\AuthenticationServiceProvider;
 use Seatplus\Auth\Models\User;
+use Seatplus\BroadcastHub\BroadcastHubServiceProvider;
 use Seatplus\Connector\ConnectorServiceProvider;
+use Seatplus\Discord\Discord;
 use Seatplus\Discord\DiscordServiceProvider;
 use Seatplus\Eveapi\EveapiServiceProvider;
 
@@ -28,6 +31,7 @@ class TestCase extends Orchestra
                 Str::startsWith($modelName, 'Seatplus\Eveapi') => 'Seatplus\\Eveapi\\Database\\Factories\\'.class_basename($modelName).'Factory',
                 Str::startsWith($modelName, 'Seatplus\Tribe') => 'Seatplus\\Tribe\\Database\\Factories\\'.class_basename($modelName).'Factory',
                 Str::startsWith($modelName, 'Seatplus\Discord') => 'Seatplus\\Discord\\Database\\Factories\\'.class_basename($modelName).'Factory',
+                Str::startsWith($modelName, 'Seatplus\BroadcastHub') => 'Seatplus\\BroadcastHub\\Database\\Factories\\'.class_basename($modelName).'Factory',
                 default => dd('no match for '.$modelName)
             }
         );
@@ -44,6 +48,7 @@ class TestCase extends Orchestra
             ConnectorServiceProvider::class,
             EveapiServiceProvider::class,
             AuthenticationServiceProvider::class,
+            BroadcastHubServiceProvider::class
         ];
     }
 
@@ -58,6 +63,7 @@ class TestCase extends Orchestra
 
         $app['config']->set('cache.prefix', 'seatplus_tests---');
 
+        $app['config']->set('services.discord.bot_token', 'token');
 
         //Setup Inertia for package development
         /*config()->set('inertia.testing.page_paths', array_merge(

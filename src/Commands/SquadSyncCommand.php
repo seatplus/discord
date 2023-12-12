@@ -4,7 +4,6 @@ namespace Seatplus\Discord\Commands;
 
 use Illuminate\Console\Command;
 use Seatplus\Discord\Discord;
-use Seatplus\Discord\Services\Members\UpdateUsersNick;
 use Seatplus\Discord\Services\Roles\AssignRolesToUser;
 use Seatplus\Discord\Services\Roles\BuildRoleControlGroupMap;
 

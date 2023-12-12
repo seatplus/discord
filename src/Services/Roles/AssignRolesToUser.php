@@ -11,10 +11,10 @@ use function PHPUnit\Framework\isNull;
 class AssignRolesToUser
 {
     public array $role_mappings;
+    private string $guild_id = '';
 
 
     public function __construct(
-        private string $guild_id = '',
         private ?BuildRoleControlGroupMap $buildRoleControlGroupMap = null
     )
     {
@@ -31,13 +31,13 @@ class AssignRolesToUser
     public function execute(User $user): void
     {
 
-        $update_member_roles = new UpdateMemberAttribute($this->guild_id, $user->connector_id);
-        $getMemberAttribute = new GetMemberAttribute($this->guild_id, $user->connector_id);
+        $update_member_roles = new UpdateMemberAttribute($user->connector_id);
+        $getMemberAttribute = new GetMemberAttribute($user->connector_id);
 
         // get current roles from user
         $roles = $user->roles()->pluck('name');
 
-        // get all snowflake ids from discord meber
+        // get all snowflake ids from discord member
         $users_discord_roles = $getMemberAttribute->roles();
 
         // get all role_ids from role_mappings

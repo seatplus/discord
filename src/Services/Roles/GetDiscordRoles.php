@@ -3,23 +3,24 @@
 namespace Seatplus\Discord\Services\Roles;
 
 use Illuminate\Support\Collection;
+use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Discord;
 
 
 class GetDiscordRoles
 {
-    private string $guild_id;
+    private Guild $client;
 
     public function __construct()
     {
-        $this->guild_id = Discord::getGuildId();
+        $this->client = app(Guild::class);
     }
 
     public function execute(): Collection
     {
 
         // get all roles from guild
-        return (new \Seatplus\Discord\Client\Roles($this->guild_id))->get();
+        return $this->client->getGuildRoles();
     }
 
 }

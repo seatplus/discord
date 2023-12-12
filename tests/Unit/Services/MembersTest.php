@@ -10,10 +10,9 @@ beforeEach(function () {
 
     // set guild_id and user_id
 
-    $this->guild_id = '1';
-
-    Discord::getSettings()->getValue('guild_id');
-    Discord::getSettings()->setValue('guild_id', $this->guild_id);
+    // create a binding scoped singleton
+    $this->guild_id = '123456789';
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild($this->guild_id));
 
     $this->user_id = '1';
 
@@ -24,14 +23,14 @@ it('gets Members Role', function () {
     // fake http response
     Http::fake(fn() => Http::response(test()->getDiscordMember()));
 
-    $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->guild_id, $this->user_id);
+    $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->user_id);
 
     expect($member->roles())->toBeArray();
 
     Http::assertSentCount(1);
 
     Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://discord.com/api/guilds/1/members/1';
+        return $request->url() === 'https://discord.com/api/guilds/123456789/members/1';
     });
 
 });
@@ -41,14 +40,14 @@ it('gets Members Nick', function () {
     // fake http response
     Http::fake(fn() => Http::response(test()->getDiscordMember()));
 
-    $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->guild_id, $this->user_id);
+    $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->user_id);
 
     expect($member->nick())->toBeString();
 
     Http::assertSentCount(1);
 
     Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://discord.com/api/guilds/1/members/1';
+        return $request->url() === 'https://discord.com/api/guilds/123456789/members/1';
     });
 
 });
@@ -77,6 +76,9 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
 
     // expect to have 1 DiscordUser
     expect(Discord::users())->toHaveCount(1);
+
+    Discord::getSettings()->getValue('guild_id');
+    Discord::getSettings()->setValue('guild_id', $this->guild_id);
 
     $update_action = new \Seatplus\Discord\Services\Members\UpdateUsersNick(
         $this->guild_id,
@@ -178,17 +180,17 @@ it('does not update member if no prefix, no suffic, no ticker is set', function 
     // expect to have 1 DiscordUser
     expect(Discord::users())->toHaveCount(1);
 
-    $update_action = new \Seatplus\Discord\Services\Members\UpdateUsersNick(
-        $this->guild_id,
-        Discord::users()
-    );
+    Discord::getSettings()->getValue('guild_id');
+    Discord::getSettings()->setValue('guild_id', $this->guild_id);
+
+    $update_action = new \Seatplus\Discord\Services\Members\UpdateUsersNick();
 
     $update_action->execute();
 
-    // assert that 1 requests are sent (getMember)
+    // assert that 1 request are sent (getMember)
     Http::assertSentCount(1);
 
    Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://discord.com/api/guilds/1/members/1';
+        return $request->url() === 'https://discord.com/api/guilds/123456789/members/1';
     });
 });

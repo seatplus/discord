@@ -3,46 +3,42 @@
 namespace Seatplus\Discord\Client;
 
 use Composer\InstalledVersions;
-use GuzzleHttp\Client;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use OutOfBoundsException;
-use Seatplus\Connector\Models\User;
 use Seatplus\Discord\Discord;
 
-abstract class DiscordClient
+class DiscordClient
 {
-    protected PendingRequest $client;
+    public PendingRequest $client;
 
-    public function getClient(): PendingRequest
+    public function __construct(
+        string $token,
+        InstalledVersionsWrapper $installedVersions = null
+    )
     {
-        if(! isset($this->client)) {
 
-            // get installed version of this package via composer
-            try {
-                $version = InstalledVersions::getPrettyVersion('seatplus/discord');
-            } catch (OutOfBoundsException $e) {
-                $version = 'dev';
-            }
+        $installedVersions ??= new InstalledVersionsWrapper();
 
-            $this->client = Http::baseUrl('https://discord.com/api/')
-                ->withHeaders([
-                    'Authorization' => 'Bot ' . config('services.discord.bot_token'),
-                    'User-Agent' => "Seatplus Discord Connector v.${version}"
-                ])
-                ->acceptJson();
+        // get installed version of this package via composer
+        try {
+            $version = $installedVersions->getPrettyVersion('seatplus/discord');
+        } catch (OutOfBoundsException $e) {
+            $version = 'dev';
         }
 
-        return $this->client;
+        $this->client = Http::baseUrl('https://discord.com/api/')
+            ->withHeaders([
+                'Authorization' => "Bot {$token}", //'Bot ' . config('services.discord.bot_token'),
+                'User-Agent' => "Seatplus Discord Connector v.{$version}"
+            ])
+            ->acceptJson();
     }
 
-    /**
-     * @throws \Throwable
-     */
     public function invoke(string $method, string $endpoint, array $url_parameters, array $options = []): Response
     {
-        $response = $this->getClient()
+        $response = $this->client
             ->withUrlParameters($url_parameters)
             ->$method($endpoint, $options);
 
@@ -53,12 +49,14 @@ abstract class DiscordClient
 
             match ($code) {
                 10007 => $this->deleteUser($url_parameters),
-                10004 => $this->deleteGuild()
+                10004 => $this->deleteGuild(),
+                default => $response->throw(),
             };
         }
 
-        return $response->throw();
+        return $response;
     }
+
 
     /**
      * @throws \Throwable
@@ -78,8 +76,8 @@ abstract class DiscordClient
         // find user
         $user = $users->firstWhere('connector_id', $user_id);
 
-        // delete user
-        $user->delete();
+        // delete user if found
+        $user?->delete();
     }
 
     private function deleteGuild(): void

@@ -3,18 +3,17 @@
 namespace Seatplus\Discord\Services\Members;
 
 use Illuminate\Support\Str;
-use Seatplus\Discord\Client\Member;
 
 class ApplyNickPreAndPostFixToMember
 {
     private UpdateMemberAttribute $update_member_attribute;
     private GetMemberAttribute $get_member_attribute;
 
-    public function __construct($guild_id, $user_id)
+    public function __construct($user_id)
     {
 
-        $this->update_member_attribute = new UpdateMemberAttribute($guild_id, $user_id);
-        $this->get_member_attribute = new GetMemberAttribute($guild_id, $user_id);
+        $this->update_member_attribute = new UpdateMemberAttribute($user_id);
+        $this->get_member_attribute = new GetMemberAttribute($user_id);
     }
 
     public function execute(?string $nick_pre_fix = null, ?string $suffix = null, ?string $ticker = null): void

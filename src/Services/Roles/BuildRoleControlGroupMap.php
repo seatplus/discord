@@ -5,6 +5,7 @@ namespace Seatplus\Discord\Services\Roles;
 use Illuminate\Support\Collection;
 
 use Seatplus\Auth\Models\Permissions\Role;
+use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Discord;
 
 class BuildRoleControlGroupMap
@@ -14,7 +15,7 @@ class BuildRoleControlGroupMap
     private CheckBotPermissions $check_bot_permissions;
     private GetDiscordRoles $get_discord_roles;
     private string $guild_id;
-    private \Seatplus\Discord\Client\Roles $roles_client;
+    private Guild $guild_client;
 
     public function __construct()
     {
@@ -44,7 +45,7 @@ class BuildRoleControlGroupMap
             ->filter(fn ($role) => !$discord_roles->contains('name', $role))
             // create the roles
             ->each(function (string $role){
-                $created_role = $this->getDiscordRolesClient()->create($role);
+                $created_role = $this->getDiscordGuildClient()->createGuildRole($role);
                 $this->array_map->put($role, $created_role['id']);
             });
 
@@ -52,13 +53,13 @@ class BuildRoleControlGroupMap
 
     }
 
-    private function getDiscordRolesClient(): \Seatplus\Discord\Client\Roles
+    private function getDiscordGuildClient(): Guild
     {
-        if(!isset($this->roles_client)) {
-            $this->roles_client = new \Seatplus\Discord\Client\Roles($this->guild_id);
+        if (!isset($this->guild_client)) {
+            $this->guild_client = app(Guild::class);
         }
 
-        return $this->roles_client;
+        return $this->guild_client;
     }
 
 }
