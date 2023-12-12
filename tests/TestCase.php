@@ -48,7 +48,7 @@ class TestCase extends Orchestra
             AuthenticationServiceProvider::class,
             BroadcastHubServiceProvider::class,
             TribeServiceProvider::class,
-            ConnectorServiceProvider::class
+            ConnectorServiceProvider::class,
         ];
     }
 
