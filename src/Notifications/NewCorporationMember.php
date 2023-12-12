@@ -8,8 +8,7 @@ use NumberFormatter;
 
 class NewCorporationMember extends \Seatplus\BroadcastHub\Notifications\NewCorporationMember
 {
-
-    public function via() : array
+    public function via(): array
     {
         return [DiscordChannel::class];
     }

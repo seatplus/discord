@@ -24,5 +24,4 @@ it('throws exception if bot has not enough permissions', function () {
     // check if exception is thrown
     (new \Seatplus\Discord\Services\Roles\CheckBotPermissions)->check($discord_roles, $control_group_names);
 
-
 })->throws(\Exception::class, 'Bot has not enough permissions to update roles');

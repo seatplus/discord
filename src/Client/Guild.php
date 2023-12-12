@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 class Guild
 {
     const CHANNEL_ENDPOINT = 'guilds/{guild.id}/channels';
+
     const MEMBER_ENDPOINT = 'guilds/{guild.id}/members/{user.id}';
 
     const ROLE_ENDPOINT = 'guilds/{guild.id}/roles';
@@ -14,21 +15,20 @@ class Guild
     public function __construct(
         public int $guild_id,
         private ?DiscordClient $client = null
-    )
-    {
-        if (!$this->client) {
+    ) {
+        if (! $this->client) {
             $this->client = app(DiscordClient::class);
         }
     }
 
-    public function getGuildChannels(string $key = null): array|string|bool|int|null
+    public function getGuildChannels(?string $key = null): array|string|bool|int|null
     {
         return $this->client->invoke('GET', self::CHANNEL_ENDPOINT, [
             'guild.id' => $this->guild_id,
         ])->json($key);
     }
 
-    public function getGuildMember(string $user_id, string $key = null): array|string|bool|int|null
+    public function getGuildMember(string $user_id, ?string $key = null): array|string|bool|int|null
     {
         return $this->client->invoke('GET', self::MEMBER_ENDPOINT, [
             'guild.id' => $this->guild_id,
@@ -52,7 +52,7 @@ class Guild
         ]);
     }
 
-    public function getGuildRoles(string $id = null): Collection | array
+    public function getGuildRoles(?string $id = null): Collection|array
     {
         $roles = $this->client->invoke('GET', self::ROLE_ENDPOINT, [
             'guild.id' => $this->guild_id,
@@ -66,7 +66,7 @@ class Guild
 
         return $roles
             ->filter(fn (array $role) => $role['name'] !== '@everyone')
-            ->filter(fn (array $role) => !$role['managed']);
+            ->filter(fn (array $role) => ! $role['managed']);
     }
 
     public function createGuildRole(string $name, ?int $position = null): array
@@ -91,12 +91,7 @@ class Guild
                 'guild.id' => $this->guild_id,
             ],
             [
-                ['id' => $role_id, 'position' => $position]
+                ['id' => $role_id, 'position' => $position],
             ])->collect();
     }
-
-
-
-
-
 }

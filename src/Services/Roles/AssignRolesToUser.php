@@ -6,21 +6,19 @@ use Seatplus\Connector\Models\User;
 use Seatplus\Discord\Discord;
 use Seatplus\Discord\Services\Members\GetMemberAttribute;
 use Seatplus\Discord\Services\Members\UpdateMemberAttribute;
-use function PHPUnit\Framework\isNull;
 
 class AssignRolesToUser
 {
     public array $role_mappings;
-    private string $guild_id = '';
 
+    private string $guild_id = '';
 
     public function __construct(
         private ?BuildRoleControlGroupMap $buildRoleControlGroupMap = null
-    )
-    {
+    ) {
         $this->guild_id = Discord::getGuildId();
 
-        if(is_null($this->buildRoleControlGroupMap)) {
+        if (is_null($this->buildRoleControlGroupMap)) {
             $this->buildRoleControlGroupMap = new BuildRoleControlGroupMap;
         }
     }
@@ -54,23 +52,19 @@ class AssignRolesToUser
 
     }
 
-    /**
-     * @param array $role_mappings
-     * @return AssignRolesToUser
-     */
     public function setRoleMappings(array $role_mappings): AssignRolesToUser
     {
         $this->role_mappings = $role_mappings;
+
         return $this;
     }
 
     /**
-     * @return array
      * @throws \Exception
      */
     public function getRoleMappings(): array
     {
-        if(!isset($this->role_mappings)) {
+        if (! isset($this->role_mappings)) {
 
             $mapping = $this->buildRoleControlGroupMap->execute();
 
@@ -79,5 +73,4 @@ class AssignRolesToUser
 
         return $this->role_mappings;
     }
-
 }

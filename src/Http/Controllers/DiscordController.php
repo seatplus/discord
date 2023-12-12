@@ -2,13 +2,11 @@
 
 namespace Seatplus\Discord\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Seatplus\Discord\Http\Actions\GetSocialiteProviderAction;
 use Seatplus\Discord\Http\Actions\HandleSocialiteCallbackAction;
 
 final class DiscordController
 {
-
     public function register(GetSocialiteProviderAction $get_socialite_provider_action)
     {
         $provider = $get_socialite_provider_action->execute();
@@ -22,7 +20,6 @@ final class DiscordController
         return $provider->redirect();
     }
 
-
     public function callback(HandleSocialiteCallbackAction $handle_socialite_callback_action)
     {
         $handle_socialite_callback_action->execute();
@@ -31,13 +28,10 @@ final class DiscordController
         $previous_route = session()->pull('previous_route');
 
         // if previous route is set redirect to it
-        if($previous_route) {
+        if ($previous_route) {
             return redirect($previous_route);
         }
 
         return redirect()->route('tribe.index');
     }
-
-
-
 }

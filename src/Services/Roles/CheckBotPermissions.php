@@ -4,7 +4,6 @@ namespace Seatplus\Discord\Services\Roles;
 
 use Illuminate\Support\Collection;
 use Seatplus\Discord\Client\Guild;
-use Seatplus\Discord\Discord;
 
 class CheckBotPermissions
 {
@@ -12,17 +11,16 @@ class CheckBotPermissions
 
     public function __construct()
     {
-        $this->guild_client = app(Guild::class);;
+        $this->guild_client = app(Guild::class);
     }
 
     public function check(Collection $discord_roles, Collection $control_group_names)
     {
 
-
         // remove all roles which are not in control group
         $roles = $discord_roles->filter(fn ($role) => $control_group_names->contains($role['name']));
 
-        if($roles->isEmpty()) {
+        if ($roles->isEmpty()) {
             return;
         }
 
@@ -37,5 +35,4 @@ class CheckBotPermissions
         }
 
     }
-
 }

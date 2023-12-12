@@ -2,7 +2,6 @@
 
 namespace Seatplus\Discord\Client;
 
-use Composer\InstalledVersions;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -15,9 +14,8 @@ class DiscordClient
 
     public function __construct(
         string $token,
-        InstalledVersionsWrapper $installedVersions = null
-    )
-    {
+        ?InstalledVersionsWrapper $installedVersions = null
+    ) {
 
         $installedVersions ??= new InstalledVersionsWrapper();
 
@@ -31,7 +29,7 @@ class DiscordClient
         $this->client = Http::baseUrl('https://discord.com/api/')
             ->withHeaders([
                 'Authorization' => "Bot {$token}", //'Bot ' . config('services.discord.bot_token'),
-                'User-Agent' => "Seatplus Discord Connector v.{$version}"
+                'User-Agent' => "Seatplus Discord Connector v.{$version}",
             ])
             ->acceptJson();
     }
@@ -42,7 +40,7 @@ class DiscordClient
             ->withUrlParameters($url_parameters)
             ->$method($endpoint, $options);
 
-        if($response->clientError()) {
+        if ($response->clientError()) {
 
             // get body from response
             $code = $response->json('code');
@@ -56,7 +54,6 @@ class DiscordClient
 
         return $response;
     }
-
 
     /**
      * @throws \Throwable
@@ -84,7 +81,4 @@ class DiscordClient
     {
         Discord::getSettings()->setValue('guild_id', null);
     }
-
-
-
 }

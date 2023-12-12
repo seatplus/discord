@@ -14,7 +14,7 @@ it('gets role mappings', function () {
         $mock->shouldReceive('execute')
             ->andReturn([
                 'testRole' => '123456789',
-                ]);
+            ]);
     });
 
     $role_mappings = (new AssignRolesToUser($buildRoleControlGroupMap))->getRoleMappings();

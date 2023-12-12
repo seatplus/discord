@@ -9,6 +9,7 @@ use Seatplus\Discord\Discord;
 class UpdateUsersNick
 {
     private ?string $guild_id;
+
     private Collection $users;
 
     public function __construct(
@@ -16,8 +17,7 @@ class UpdateUsersNick
         private ?string $suffix = null,
         private bool $has_ticker = false,
         private bool $has_error = false,
-    )
-    {
+    ) {
         $this->guild_id = Discord::getGuildId();
         $this->users = Discord::users();
 
@@ -41,7 +41,7 @@ class UpdateUsersNick
         try {
             $ticker = null;
 
-            if($this->has_ticker) {
+            if ($this->has_ticker) {
                 /** @phpstan-ignore-next-line */
                 $ticker = $user->seatplusUser->main_character->corporation->ticker;
             }
@@ -63,7 +63,6 @@ class UpdateUsersNick
             return;
         }
 
-
     }
 
     public function hasError(): bool
@@ -75,5 +74,4 @@ class UpdateUsersNick
     {
         $this->has_error = true;
     }
-
 }

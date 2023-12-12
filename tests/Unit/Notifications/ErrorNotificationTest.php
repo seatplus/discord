@@ -2,7 +2,7 @@
 
 use Seatplus\BroadcastHub\Notifications\ErrorNotification;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->recipient = \Seatplus\BroadcastHub\Recipient::factory()->create();
 
     $this->notification = new \Seatplus\Discord\Notifications\ErrorNotification(

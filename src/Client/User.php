@@ -10,6 +10,7 @@ class User
     {
         $this->client = app(DiscordClient::class);
     }
+
     public function getPrivateChannel(int $recipient_id): string
     {
         $response = $this->client->invoke('POST', 'users/@me/channels', [], [
@@ -18,5 +19,4 @@ class User
 
         return $response->json('id');
     }
-
 }

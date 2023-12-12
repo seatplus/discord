@@ -15,9 +15,8 @@ use Seatplus\Discord\Notifications\ErrorNotification;
 use Seatplus\Discord\Notifications\NewCorporationMember;
 use Seatplus\Tribe\Contracts\Tribe;
 
-class Discord implements Tribe, Broadcaster
+class Discord implements Broadcaster, Tribe
 {
-
     public static function getName(): string
     {
         return 'discord';
@@ -55,13 +54,13 @@ class Discord implements Tribe, Broadcaster
     public static function isTribeSetup(): bool
     {
 
-        return !!self::getSettings()->getValue('guild_id');
+        return (bool) self::getSettings()->getValue('guild_id');
     }
 
     public static function getConnectorConfigUrl(): string
     {
         // get the vendor name from the composer
-        return "https://github.com/seatplus/discord#package_description";
+        return 'https://github.com/seatplus/discord#package_description';
     }
 
     public static function isConnectorConfigured(): bool
@@ -69,12 +68,12 @@ class Discord implements Tribe, Broadcaster
         $config = config('services.discord');
 
         // check if any of the config values are null
-        return !in_array(null, $config);
+        return ! in_array(null, $config);
     }
 
     public static function isTribeEnabled(): bool
     {
-        return !!self::getSettings()->getValue('tribes');
+        return (bool) self::getSettings()->getValue('tribes');
     }
 
     public static function enableTribe(): void
@@ -101,7 +100,6 @@ class Discord implements Tribe, Broadcaster
     {
         return Settings::firstOrCreate(['connector' => Discord::class]);
     }
-
 
     public static function getNicknamePolicyCommandImplementation(): string
     {
@@ -150,7 +148,7 @@ class Discord implements Tribe, Broadcaster
 
     public static function isConnectorSetup(): bool
     {
-        return !!self::getSettings()->getValue('guild_id');
+        return (bool) self::getSettings()->getValue('guild_id');
     }
 
     public static function storeBroadcasterSettings(array $settings): void
@@ -170,7 +168,7 @@ class Discord implements Tribe, Broadcaster
             ->first(fn ($class) => is_subclass_of($class, $notification_class));
 
         // throw an exception if the notification class is not found
-        if (!$notification_class) {
+        if (! $notification_class) {
             throw new \Exception('Notification not implemented');
         }
 

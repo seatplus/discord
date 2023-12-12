@@ -23,7 +23,7 @@ it('returns registration url', function () {
 
 it('returns connector route', function () {
 
-    expect(\Seatplus\Discord\Discord::getConnectorConfigUrl())->toEqual("https://github.com/seatplus/discord#package_description");
+    expect(\Seatplus\Discord\Discord::getConnectorConfigUrl())->toEqual('https://github.com/seatplus/discord#package_description');
 });
 
 it('returns is connector configured', function () {
@@ -77,7 +77,7 @@ it('gets getSquadSyncCommandImplementation', function () {
 it('gets NotifiableId from channel', function () {
 
     // Mock Recipient
-    $recipient = $this->mock(\Seatplus\BroadcastHub\Recipient::class, function (\Mockery\MockInterface $mock) {
+    $recipient = $this->mock(\Seatplus\BroadcastHub\Recipient::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('getAttribute')
             ->with('name')
@@ -95,28 +95,28 @@ it('gets NotifiableId from channel', function () {
 
 it('gets NotifiableID from user', function () {
 
-        // Mock DiscordUser
-        $this->mock(\Seatplus\Discord\Client\User::class, function (\Mockery\MockInterface $mock) {
+    // Mock DiscordUser
+    $this->mock(\Seatplus\Discord\Client\User::class, function (Mockery\MockInterface $mock) {
 
-            $mock->shouldReceive('getPrivateChannel')
-                ->andReturn('discord_id');
-        });
+        $mock->shouldReceive('getPrivateChannel')
+            ->andReturn('discord_id');
+    });
 
-        // Mock Recipient
-        $recipient = $this->mock(\Seatplus\BroadcastHub\Recipient::class, function (\Mockery\MockInterface $mock) {
+    // Mock Recipient
+    $recipient = $this->mock(\Seatplus\BroadcastHub\Recipient::class, function (Mockery\MockInterface $mock) {
 
-            $mock->shouldReceive('getAttribute')
-                ->with('name')
-                ->once()
-                ->andReturnNull();
+        $mock->shouldReceive('getAttribute')
+            ->with('name')
+            ->once()
+            ->andReturnNull();
 
-            $mock->shouldReceive('getAttribute')
-                ->with('connector_id')
-                ->once()
-                ->andReturn(42);
-        });
+        $mock->shouldReceive('getAttribute')
+            ->with('connector_id')
+            ->once()
+            ->andReturn(42);
+    });
 
-        expect(Discord::getNotifiableId($recipient))->toEqual('discord_id');
+    expect(Discord::getNotifiableId($recipient))->toEqual('discord_id');
 });
 
 it('gets getImplementedNotificationClasses', function () {
@@ -164,13 +164,13 @@ it('stores BroadcasterSettings', function () {
 
 it('finds implemented notification ', function () {
 
-        expect(Discord::findImplementedNotificationClass(\Seatplus\BroadcastHub\Notifications\NewCorporationMember::class))->toEqual(NewCorporationMember::class);
+    expect(Discord::findImplementedNotificationClass(\Seatplus\BroadcastHub\Notifications\NewCorporationMember::class))->toEqual(NewCorporationMember::class);
 
 });
 
 it('throws exception when implemented notification class not found', function () {
 
-    expect(fn() => Discord::findImplementedNotificationClass('test'))->toThrow(\Exception::class);
+    expect(fn () => Discord::findImplementedNotificationClass('test'))->toThrow(\Exception::class);
 });
 
 it('get Channels', function () {
@@ -181,7 +181,7 @@ it('get Channels', function () {
     Discord::getSettings()->setValue('guild_id', $guild_id);
 
     // Mock Guild
-    $this->mock(\Seatplus\Discord\Client\Guild::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(\Seatplus\Discord\Client\Guild::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('getGuildChannels')
             ->andReturn([
@@ -194,7 +194,7 @@ it('get Channels', function () {
                     'id' => 'discord_id_2',
                     'name' => 'name_2',
                     'type' => 0,
-                ]
+                ],
             ]);
     });
 

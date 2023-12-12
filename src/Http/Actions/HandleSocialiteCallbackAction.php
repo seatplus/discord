@@ -23,7 +23,7 @@ class HandleSocialiteCallbackAction
         /** @var \SocialiteProviders\Manager\OAuth2\User $socialite_user */
         $socialite_user = Socialite::driver('discord')->user();
 
-        if(!$this->guild_id) {
+        if (! $this->guild_id) {
             $this->persistGuildInformation($socialite_user);
         }
 
@@ -33,7 +33,7 @@ class HandleSocialiteCallbackAction
             ->first();
 
         // if user is already registered remove the old user
-        if($user && $user->connector_id !== $socialite_user->getId()) {
+        if ($user && $user->connector_id !== $socialite_user->getId()) {
             $this->kickUser($user);
         }
 
@@ -54,7 +54,7 @@ class HandleSocialiteCallbackAction
         ], [
             'settings' => [
                 'guild_id' => data_get($accessTokenResponseBody, 'guild.id'),
-                'owner_id' => data_get($accessTokenResponseBody, 'guild.owner_id')
+                'owner_id' => data_get($accessTokenResponseBody, 'guild.owner_id'),
             ],
         ]);
     }
@@ -64,5 +64,4 @@ class HandleSocialiteCallbackAction
 
         app(Guild::class)->removeGuildMember($user->connector_id);
     }
-
 }

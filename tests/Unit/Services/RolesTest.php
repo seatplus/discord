@@ -1,16 +1,15 @@
 <?php
 
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Seatplus\Auth\Models\Permissions\Role;
 use Seatplus\Discord\Discord;
-use Illuminate\Http\Client\Request;
 use Seatplus\Discord\Services\Roles\AssignRolesToUser;
 
 beforeEach(function () {
 
     // create a binding scoped singleton
-    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild('123456789'));
-
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn () => new \Seatplus\Discord\Client\Guild('123456789'));
 
     $this->user_id = '1';
 
@@ -21,7 +20,7 @@ beforeEach(function () {
 it('get discord roles', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(test()->getDiscordRolesMock()));
+    Http::fake(fn () => Http::response(test()->getDiscordRolesMock()));
 
     $get_discord_roles = new \Seatplus\Discord\Services\Roles\GetDiscordRoles;
 
@@ -98,12 +97,12 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
     ];
 
     // create connector_user
-    $user = \Illuminate\Support\Facades\Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = \Illuminate\Support\Facades\Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
     $connector_user = \Seatplus\Connector\Models\User::create([
-            'user_id' => $user->id,
-            'connector_id' => $this->user_id,
-            'connector_type' => Discord::class,
-        ]);
+        'user_id' => $user->id,
+        'connector_id' => $this->user_id,
+        'connector_type' => Discord::class,
+    ]);
 
     Discord::getSettings()->getValue('guild_id');
     Discord::getSettings()->setValue('guild_id', 123456789);
@@ -111,7 +110,7 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
     // prepare the action
     $assign_roles_to_user = (new AssignRolesToUser)->setRoleMappings($role_mapping);
 
-    if($hasRole) {
+    if ($hasRole) {
         // assign Role to user
         $user->assignRole($this->role);
     }
@@ -133,7 +132,7 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
 
     expect($request['roles'])->toBeArray();
 
-    if($hasRole) {
+    if ($hasRole) {
         expect($request['roles'])->toContain('10');
     } else {
         expect($request['roles'])
@@ -141,4 +140,3 @@ it('assigns roles to user if user has role', function (bool $hasRole) {
     }
 
 })->with([true, false]);
-

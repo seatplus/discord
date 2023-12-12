@@ -12,7 +12,7 @@ beforeEach(function () {
 
     // create a binding scoped singleton
     $this->guild_id = '123456789';
-    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild($this->guild_id));
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn () => new \Seatplus\Discord\Client\Guild($this->guild_id));
 
     $this->user_id = '1';
 
@@ -21,7 +21,7 @@ beforeEach(function () {
 it('gets Members Role', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(test()->getDiscordMember()));
+    Http::fake(fn () => Http::response(test()->getDiscordMember()));
 
     $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->user_id);
 
@@ -38,7 +38,7 @@ it('gets Members Role', function () {
 it('gets Members Nick', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(test()->getDiscordMember()));
+    Http::fake(fn () => Http::response(test()->getDiscordMember()));
 
     $member = new \Seatplus\Discord\Services\Members\GetMemberAttribute($this->user_id);
 
@@ -54,7 +54,7 @@ it('gets Members Nick', function () {
 
 it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool $ticker, string $current_nick) {
 
-    Http::fake(fn() => Http::response([...test()->getDiscordMember(), 'nick' => $current_nick]));
+    Http::fake(fn () => Http::response([...test()->getDiscordMember(), 'nick' => $current_nick]));
 
     // set prefix, suffix and ticker
     Discord::getSettings()->setValue('prefix', $nick_pre_fix);
@@ -62,7 +62,7 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
     Discord::getSettings()->setValue('ticker', $ticker);
 
     // create new User
-    $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     // create new connector_user
     \Seatplus\Connector\Models\User::create([
@@ -99,7 +99,7 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
     // create the expected strings array
     $expected_strings = [$nick_pre_fix, $current_nick, $suffix];
 
-    if($ticker) {
+    if ($ticker) {
         $expected_strings[] = $user->main_character->corporation->ticker;
     }
 
@@ -108,7 +108,6 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
 
     // assert that the nick is set correctly
     expect(Str::containsAll($request['nick'], $expected_strings))->toBeTrue();
-
 
 })->with([
     [
@@ -157,7 +156,7 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
 
 it('does not update member if no prefix, no suffic, no ticker is set', function () {
 
-    Http::fake(fn() => Http::response([...test()->getDiscordMember(), 'nick' => 'test']));
+    Http::fake(fn () => Http::response([...test()->getDiscordMember(), 'nick' => 'test']));
 
     // set prefix, suffix and ticker
     Discord::getSettings()->setValue('prefix', null);
@@ -165,7 +164,7 @@ it('does not update member if no prefix, no suffic, no ticker is set', function 
     Discord::getSettings()->setValue('ticker', false);
 
     // create new User
-    $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     // create new connector_user
     \Seatplus\Connector\Models\User::create([
@@ -190,7 +189,7 @@ it('does not update member if no prefix, no suffic, no ticker is set', function 
     // assert that 1 request are sent (getMember)
     Http::assertSentCount(1);
 
-   Http::assertSent(function (Request $request) {
+    Http::assertSent(function (Request $request) {
         return $request->url() === 'https://discord.com/api/guilds/123456789/members/1';
     });
 });

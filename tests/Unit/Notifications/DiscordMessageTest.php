@@ -13,8 +13,8 @@ it('can set embeds', function () {
             [
                 'title' => 'test',
                 'description' => 'test',
-                'color' => 0xff0000,
-            ]
+                'color' => 0xFF0000,
+            ],
         ]);
 
     expect($message->embeds)->toHaveCount(1);

@@ -4,8 +4,6 @@ namespace Seatplus\Discord\Services\Roles;
 
 use Illuminate\Support\Collection;
 use Seatplus\Discord\Client\Guild;
-use Seatplus\Discord\Discord;
-
 
 class GetDiscordRoles
 {
@@ -22,5 +20,4 @@ class GetDiscordRoles
         // get all roles from guild
         return $this->client->getGuildRoles();
     }
-
 }
