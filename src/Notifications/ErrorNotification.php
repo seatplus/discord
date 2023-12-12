@@ -4,7 +4,6 @@ namespace Seatplus\Discord\Notifications;
 
 class ErrorNotification extends \Seatplus\BroadcastHub\Notifications\ErrorNotification
 {
-
     protected static ?string $title = 'Discord Error Notification';
 
     public function via(): array
@@ -19,7 +18,7 @@ class ErrorNotification extends \Seatplus\BroadcastHub\Notifications\ErrorNotifi
         return $message->addEmbed([
             'title' => $this->notification_class,
             'description' => $this->error_message,
-            'color' => 0xff0000,
+            'color' => 0xFF0000,
         ]);
     }
 }

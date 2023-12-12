@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 it('gets Private Channel of recipient', function () {
 
     // fake http client
-    Http::fake(fn() => Http::response(json_encode([
+    Http::fake(fn () => Http::response(json_encode([
         'id' => '123456789',
         'type' => 1,
         'recipients' => [

@@ -15,7 +15,7 @@ class NicknameCommand extends Command
     {
         $update_users_nick->execute();
 
-        if($update_users_nick->hasError()) {
+        if ($update_users_nick->hasError()) {
             $this->error('There was an error updating the nicknames, check the logs!');
 
             return self::FAILURE;
@@ -26,5 +26,4 @@ class NicknameCommand extends Command
         return self::SUCCESS;
 
     }
-
 }

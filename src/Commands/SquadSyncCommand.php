@@ -26,11 +26,11 @@ class SquadSyncCommand extends Command
 
             report($e);
             $this->error('There was an error creating the role mappings, check the logs!');
+
             return self::FAILURE;
         }
 
         $assignRolesToUser = $assignRolesToUser->setRoleMappings($this->role_mappings);
-
 
         Discord::users()->each(function ($user) use ($assignRolesToUser) {
             try {
@@ -47,10 +47,9 @@ class SquadSyncCommand extends Command
             }
         });
 
-
-
-        if($this->has_error) {
+        if ($this->has_error) {
             $this->error('There was an error updating the squads, check the logs!');
+
             return self::FAILURE;
         } else {
             $this->info('Squads updated');
@@ -71,5 +70,4 @@ class SquadSyncCommand extends Command
     {
         $this->has_error = true;
     }
-
 }

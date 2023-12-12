@@ -4,7 +4,6 @@ namespace Seatplus\Discord\Client;
 
 class Channel
 {
-
     private DiscordClient $client;
 
     public function __construct()
@@ -18,5 +17,4 @@ class Channel
             'channel.id' => $channel_id,
         ], $data)->json();
     }
-
 }

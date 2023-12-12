@@ -12,15 +12,14 @@ class DiscordMessage
     public function __construct(
         public string $body = '',
         public array $embeds = []
-    )
-    {
+    ) {
     }
 
     public function toArray(): array
     {
         return [
             'content' => $this->body,
-            'embeds' => $this->embeds
+            'embeds' => $this->embeds,
         ];
     }
 
@@ -44,5 +43,4 @@ class DiscordMessage
 
         return $this;
     }
-
 }

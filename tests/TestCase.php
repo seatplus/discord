@@ -4,7 +4,6 @@ namespace Seatplus\Discord\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -12,13 +11,12 @@ use Seatplus\Auth\AuthenticationServiceProvider;
 use Seatplus\Auth\Models\User;
 use Seatplus\BroadcastHub\BroadcastHubServiceProvider;
 use Seatplus\Connector\ConnectorServiceProvider;
-use Seatplus\Discord\Discord;
 use Seatplus\Discord\DiscordServiceProvider;
 use Seatplus\Eveapi\EveapiServiceProvider;
+use Seatplus\Tribe\TribeServiceProvider;
 
 class TestCase extends Orchestra
 {
-
     use LazilyRefreshDatabase;
 
     protected function setUp(): void
@@ -48,7 +46,8 @@ class TestCase extends Orchestra
             ConnectorServiceProvider::class,
             EveapiServiceProvider::class,
             AuthenticationServiceProvider::class,
-            BroadcastHubServiceProvider::class
+            BroadcastHubServiceProvider::class,
+            TribeServiceProvider::class,
         ];
     }
 

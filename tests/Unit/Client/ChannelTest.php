@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Http;
 
 it('can send a message', function () {
 
-    Http::fake(fn() => Http::response(json_encode(['id' => 'bar'])));
+    Http::fake(fn () => Http::response(json_encode(['id' => 'bar'])));
 
     $channel = new \Seatplus\Discord\Client\Channel();
 
@@ -12,7 +12,7 @@ it('can send a message', function () {
         'content' => 'test',
     ]);
 
-    \Illuminate\Support\Facades\Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+    \Illuminate\Support\Facades\Http::assertSent(function (Illuminate\Http\Client\Request $request) {
         return $request->url() === 'https://discord.com/api/channels/123/messages';
     });
 

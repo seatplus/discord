@@ -2,14 +2,13 @@
 
 namespace Seatplus\Discord\Http\Actions;
 
+use Laravel\Socialite\Facades\Socialite;
 use Seatplus\Discord\Discord;
 use SocialiteProviders\Discord\Provider;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
-use Laravel\Socialite\Facades\Socialite;
 
 class GetSocialiteProviderAction
 {
-
     const BOT_SCOPES = [
         'identify',
         'guilds.join',
@@ -23,13 +22,13 @@ class GetSocialiteProviderAction
 
     // https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
     const BOT_PERMISSIONS = [
-        'MANAGE_ROLES'          => 0x10000000,
-        'KICK_MEMBERS'          => 0x00000002,
-        'BAN_MEMBERS'           => 0x00000004,
+        'MANAGE_ROLES' => 0x10000000,
+        'KICK_MEMBERS' => 0x00000002,
+        'BAN_MEMBERS' => 0x00000004,
         'CREATE_INSTANT_INVITE' => 0x00000001,
-        'CHANGE_NICKNAME'       => 0x04000000,
-        'MANAGE_NICKNAMES'      => 0x08000000,
-        'SEND_MESSAGES'         => 0x00000800,
+        'CHANGE_NICKNAME' => 0x04000000,
+        'MANAGE_NICKNAMES' => 0x08000000,
+        'SEND_MESSAGES' => 0x00000800,
     ];
 
     private ?string $guild_id;
@@ -39,7 +38,7 @@ class GetSocialiteProviderAction
         $this->guild_id = Discord::getGuildId();
     }
 
-    public function execute() : AbstractProvider
+    public function execute(): AbstractProvider
     {
 
         /** @var Provider $socialite */
@@ -52,7 +51,7 @@ class GetSocialiteProviderAction
 
         $socialite = $socialite->setScopes($scopes);
 
-        if(!$this->guild_id) {
+        if (! $this->guild_id) {
             $socialite = $socialite->with(['permissions' => $this->getBotPermissions()]);
         }
 

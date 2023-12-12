@@ -12,8 +12,7 @@ class DiscordChannel implements \Seatplus\BroadcastHub\Contracts\Channel
     public function __construct(
         private Channel $channel,
         private ?Discord $discord = null
-    )
-    {
+    ) {
         $this->discord ??= app(Discord::class);
     }
 
@@ -31,5 +30,4 @@ class DiscordChannel implements \Seatplus\BroadcastHub\Contracts\Channel
         $this->channel->send($channel, $message->toArray());
 
     }
-
 }

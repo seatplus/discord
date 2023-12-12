@@ -14,8 +14,8 @@ it('creates user', function () {
         ->andReturn([
             'guild' => [
                 'id' => '123456789',
-                'owner_id' => '987654321'
-            ]
+                'owner_id' => '987654321',
+            ],
         ]);
 
     $provider = \Mockery::mock(\SocialiteProviders\Discord\Provider::class);
@@ -33,7 +33,7 @@ it('creates user', function () {
 
     $action = new \Seatplus\Discord\Http\Actions\HandleSocialiteCallbackAction();
 
-    $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     \Illuminate\Support\Facades\Auth::login($user);
 
@@ -41,13 +41,12 @@ it('creates user', function () {
 
     expect(Discord::users()->count())->toBe(1);
 
-
 });
 
 it('kicks old user', function () {
 
     // create a binding scoped singleton
-    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn() => new \Seatplus\Discord\Client\Guild('123456789'));
+    app()->scoped(\Seatplus\Discord\Client\Guild::class, fn () => new \Seatplus\Discord\Client\Guild('123456789'));
 
     Http::fake();
 
@@ -59,7 +58,7 @@ it('kicks old user', function () {
         ->andReturn('123456789');
 
     // create user and act as that user
-    $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     \Illuminate\Support\Facades\Auth::login($user);
 
@@ -67,7 +66,7 @@ it('kicks old user', function () {
     \Seatplus\Connector\Models\User::create([
         'user_id' => $user->id,
         'connector_id' => '999999999',
-        'connector_type' => Discord::class
+        'connector_type' => Discord::class,
     ]);
 
     $provider = \Mockery::mock(\SocialiteProviders\Discord\Provider::class);
@@ -84,7 +83,7 @@ it('kicks old user', function () {
     $action->execute();
 
     \Illuminate\Support\Facades\Http::assertSentCount(1);
-    \Illuminate\Support\Facades\Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+    \Illuminate\Support\Facades\Http::assertSent(function (Illuminate\Http\Client\Request $request) {
         return $request->url() === 'https://discord.com/api/guilds/123456789/members/999999999' &&
             $request->method() === 'DELETE';
     });

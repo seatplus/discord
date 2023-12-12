@@ -2,7 +2,7 @@
 
 it('sendsnotification', function () {
 
-   // mock channel
+    // mock channel
     $channel_mock = $this->mock(\Seatplus\Discord\Client\Channel::class, function ($mock) {
         $mock->shouldReceive('send')
             ->once();

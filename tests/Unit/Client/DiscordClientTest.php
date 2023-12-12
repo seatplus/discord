@@ -26,7 +26,7 @@ describe('Upon invoking the client, handle client errors', function () {
     it('deletes user', function () {
 
         // fake http response
-        Http::fake(fn() => Http::response(json_encode([
+        Http::fake(fn () => Http::response(json_encode([
             'code' => 10007,
             'message' => 'Unknown User',
         ]), 400));
@@ -53,7 +53,7 @@ describe('Upon invoking the client, handle client errors', function () {
         expect(Discord::getSettings()->getValue('guild_id'))->toEqual($guild_id);
 
         // fake http response
-        Http::fake(fn() => Http::response(json_encode([
+        Http::fake(fn () => Http::response(json_encode([
             'code' => 10004,
             'message' => 'Unknown Guild',
         ]), 400));
@@ -73,7 +73,7 @@ describe('Upon invoking the client, handle client errors', function () {
     it('throws exception', function () {
 
         // fake http response
-        Http::fake(fn() => Http::response(json_encode([
+        Http::fake(fn () => Http::response(json_encode([
             'code' => 10000,
             'message' => 'Unknown Error',
         ]), 400));

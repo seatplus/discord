@@ -6,13 +6,11 @@ use Seatplus\Discord\Client\Guild;
 
 class GetMemberAttribute
 {
-
     private Guild $guild_client;
 
     public function __construct(
         private string $user_id
-    )
-    {
+    ) {
         $this->guild_client = app(Guild::class);
     }
 
@@ -30,5 +28,4 @@ class GetMemberAttribute
     {
         return $this->guild_client->getGuildMember($this->user_id, $key);
     }
-
 }

@@ -9,7 +9,7 @@ it('has error if handleUser throws exception', function () {
     Discord::getSettings()->setValue('guild_id', 123456789);
 
     // create new User
-    $user = Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     // create new connector_user
     \Seatplus\Connector\Models\User::create([
@@ -31,6 +31,5 @@ it('has error if handleUser throws exception', function () {
     $action->execute();
 
     expect($action->hasError())->toBeTrue();
-
 
 });

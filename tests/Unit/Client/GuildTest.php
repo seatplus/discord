@@ -1,13 +1,12 @@
 <?php
 
-
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 
 it('gets guild channels', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(json_encode([
+    Http::fake(fn () => Http::response(json_encode([
         [
             'id' => '123456789',
             'name' => 'general',
@@ -35,7 +34,7 @@ it('gets guild channels', function () {
 it('gets specific role by id', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(json_encode([
+    Http::fake(fn () => Http::response(json_encode([
         [
             'id' => '123456789',
             'name' => 'general',
@@ -63,11 +62,11 @@ it('gets specific role by id', function () {
 it('creates a role with specified position', function () {
 
     // fake http response
-    Http::fake(fn() => Http::response(json_encode(['id' => 'bar'])));
+    Http::fake(fn () => Http::response(json_encode(['id' => 'bar'])));
 
     $guild = new \Seatplus\Discord\Client\Guild(123456789);
 
-    expect($guild->createGuildRole('test',1))->toBeArray()->toHaveCount(1);
+    expect($guild->createGuildRole('test', 1))->toBeArray()->toHaveCount(1);
 
     Http::assertSentCount(2);
 
@@ -77,9 +76,8 @@ it('creates a role with specified position', function () {
     );
 
     // assert second request
-    Http::assertSent(fn(Request $request) => $request->url() === 'https://discord.com/api/guilds/123456789/roles' &&
+    Http::assertSent(fn (Request $request) => $request->url() === 'https://discord.com/api/guilds/123456789/roles' &&
                $request->method() === 'PATCH'
     );
-
 
 });

@@ -25,7 +25,7 @@ it('sends notification', function () {
                 'character_id' => 2,
                 'name' => 'test2',
             ],
-        ]
+        ],
     ];
 
     $notification = new \Seatplus\Discord\Notifications\NewCorporationMember($new_corporation_members, $corporation);
@@ -54,7 +54,7 @@ it('creates DiscordMessage', function () {
                 'character_id' => 2,
                 'name' => 'test2',
             ],
-        ]
+        ],
     ];
 
     $notification = new \Seatplus\Discord\Notifications\NewCorporationMember($new_corporation_members, $corporation);
