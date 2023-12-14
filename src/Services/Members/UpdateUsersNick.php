@@ -8,24 +8,26 @@ use Seatplus\Discord\Discord;
 
 class UpdateUsersNick
 {
-    private ?string $guild_id;
 
     private Collection $users;
 
+    private ?string $prefix;
+
+    private ?string $suffix;
+
+    private bool $has_ticker;
+
+    private bool $has_error = false;
+
     public function __construct(
-        private ?string $prefix = null,
-        private ?string $suffix = null,
-        private bool $has_ticker = false,
-        private bool $has_error = false,
+
     ) {
-        $this->guild_id = Discord::getGuildId();
         $this->users = Discord::users();
 
         $settings = Discord::getSettings();
 
         $this->prefix = $settings->getValue('prefix');
         $this->suffix = $settings->getValue('suffix');
-
         $this->has_ticker = $settings->getValue('ticker') ?? false;
     }
 

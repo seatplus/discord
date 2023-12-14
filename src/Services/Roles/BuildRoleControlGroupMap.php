@@ -17,8 +17,6 @@ class BuildRoleControlGroupMap
 
     private GetDiscordRoles $get_discord_roles;
 
-    private string $guild_id;
-
     private Guild $guild_client;
 
     public function __construct()
@@ -27,7 +25,6 @@ class BuildRoleControlGroupMap
 
         $this->get_discord_roles = new GetDiscordRoles;
         $this->check_bot_permissions = new CheckBotPermissions;
-        $this->guild_id = Discord::getGuildId();
     }
 
     /**

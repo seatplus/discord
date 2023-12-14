@@ -13,11 +13,12 @@ class DiscordClient
     public PendingRequest $client;
 
     public function __construct(
-        string $token,
+        ?string $token = null,
         ?InstalledVersionsWrapper $installedVersions = null
     ) {
 
         $installedVersions ??= new InstalledVersionsWrapper();
+        $token ??= config('services.discord.bot_token');
 
         // get installed version of this package via composer
         try {

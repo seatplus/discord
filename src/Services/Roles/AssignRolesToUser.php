@@ -11,12 +11,9 @@ class AssignRolesToUser
 {
     public array $role_mappings;
 
-    private string $guild_id = '';
-
     public function __construct(
         private ?BuildRoleControlGroupMap $buildRoleControlGroupMap = null
     ) {
-        $this->guild_id = Discord::getGuildId();
 
         if (is_null($this->buildRoleControlGroupMap)) {
             $this->buildRoleControlGroupMap = new BuildRoleControlGroupMap;

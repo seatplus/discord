@@ -19,7 +19,8 @@ it('gets guild channels', function () {
         ],
     ])));
 
-    $guild = new \Seatplus\Discord\Client\Guild(123456789);
+    $guild = new \Seatplus\Discord\Client\Guild;
+    $guild->setGuildId('123456789');
 
     expect($guild->getGuildChannels())->toBeArray();
 

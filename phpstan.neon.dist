@@ -5,6 +5,8 @@ parameters:
     databaseMigrationsPath:
         - database/migrations
         - vendor/seatplus/connector/database/migrations
+        - vendor/seatplus/eveapi/database/migrations
+        - vendor/seatplus/broadcast-hub/database/migrations
     level: 4
     paths:
         - src

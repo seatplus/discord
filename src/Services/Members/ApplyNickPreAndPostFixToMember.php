@@ -28,12 +28,12 @@ class ApplyNickPreAndPostFixToMember
         if ($nick_pre_fix || $ticker) {
 
             $starts_with = match (true) {
-                // if nick_pre_fix is null and ticker is not null
-                $nick_pre_fix === null && $ticker !== null => "[{$ticker}]",
-                // if nick_pre_fix is not null and ticker is null
-                $nick_pre_fix !== null && $ticker === null => $nick_pre_fix,
                 // if nick_pre_fix is not null and ticker is not null
                 $nick_pre_fix !== null && $ticker !== null => "[{$ticker} - {$nick_pre_fix}]",
+                // if nick_pre_fix is not null and ticker is null
+                $nick_pre_fix !== null && $ticker === null => $nick_pre_fix,
+                // if nick_pre_fix is null and ticker is not null
+                $nick_pre_fix === null && $ticker !== null => "[{$ticker}]",
                 default => null
             };
 

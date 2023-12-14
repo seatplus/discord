@@ -57,9 +57,12 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
     Http::fake(fn () => Http::response([...test()->getDiscordMember(), 'nick' => $current_nick]));
 
     // set prefix, suffix and ticker
+    Discord::getSettings()->getValue('guild_id'); // getting it before setting it to make sure it is not set
     Discord::getSettings()->setValue('prefix', $nick_pre_fix);
     Discord::getSettings()->setValue('suffix', $suffix);
     Discord::getSettings()->setValue('ticker', $ticker);
+
+    expect(Discord::getSettings()->settings)->toHaveCount(3);
 
     // create new User
     $user = Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
@@ -80,10 +83,7 @@ it('updates users nick', function (?string $nick_pre_fix, ?string $suffix, bool 
     Discord::getSettings()->getValue('guild_id');
     Discord::getSettings()->setValue('guild_id', $this->guild_id);
 
-    $update_action = new \Seatplus\Discord\Services\Members\UpdateUsersNick(
-        $this->guild_id,
-        Discord::users()
-    );
+    $update_action = new \Seatplus\Discord\Services\Members\UpdateUsersNick;
 
     $update_action->execute();
 
@@ -159,6 +159,7 @@ it('does not update member if no prefix, no suffic, no ticker is set', function 
     Http::fake(fn () => Http::response([...test()->getDiscordMember(), 'nick' => 'test']));
 
     // set prefix, suffix and ticker
+    Discord::getSettings()->getValue('guild_id'); // getting it before setting it to make sure it is not set
     Discord::getSettings()->setValue('prefix', null);
     Discord::getSettings()->setValue('suffix', null);
     Discord::getSettings()->setValue('ticker', false);

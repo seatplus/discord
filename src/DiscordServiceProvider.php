@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\SocialiteManager;
 use Seatplus\BroadcastHub\BroadcastRepository;
-use Seatplus\Discord\Client\DiscordClient;
 use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Commands\NicknameCommand;
 use Seatplus\Discord\Commands\SquadSyncCommand;
@@ -102,17 +101,11 @@ class DiscordServiceProvider extends ServiceProvider
 
     private function setDefaults()
     {
-        $guild_id = Discord::getGuildId();
-
-        $this->app->when(Guild::class)
-            ->needs('$guild_id')
-            ->give($guild_id);
-
-        $token = $this->app->make('config')->get('services.discord.bot_token');
-
-        $this->app->when(DiscordClient::class)
-            ->needs('$token')
-            ->give($token);
+        //        $guild_id = Discord::getGuildId();
+        //
+        //        $this->app->when(Guild::class)
+        //            ->needs('$guild_id')
+        //            ->give($guild_id);
 
     }
 }
