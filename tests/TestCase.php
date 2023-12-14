@@ -2,6 +2,7 @@
 
 namespace Seatplus\Discord\Tests;
 
+use Illuminate\Config\Repository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -9,13 +10,14 @@ use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Seatplus\Auth\AuthenticationServiceProvider;
 use Seatplus\Auth\Models\User;
+use Seatplus\BroadcastHub\BroadcastHubServiceProvider;
 use Seatplus\Connector\ConnectorServiceProvider;
 use Seatplus\Discord\DiscordServiceProvider;
 use Seatplus\Eveapi\EveapiServiceProvider;
+use Seatplus\Tribe\TribeServiceProvider;
 
 class TestCase extends Orchestra
 {
-
     use LazilyRefreshDatabase;
 
     protected function setUp(): void
@@ -28,7 +30,8 @@ class TestCase extends Orchestra
                 Str::startsWith($modelName, 'Seatplus\Eveapi') => 'Seatplus\\Eveapi\\Database\\Factories\\'.class_basename($modelName).'Factory',
                 Str::startsWith($modelName, 'Seatplus\Tribe') => 'Seatplus\\Tribe\\Database\\Factories\\'.class_basename($modelName).'Factory',
                 Str::startsWith($modelName, 'Seatplus\Discord') => 'Seatplus\\Discord\\Database\\Factories\\'.class_basename($modelName).'Factory',
-                default => dd('no match for '.$modelName)
+                Str::startsWith($modelName, 'Seatplus\BroadcastHub') => 'Seatplus\\BroadcastHub\\Database\\Factories\\'.class_basename($modelName).'Factory',
+                default => dd("no match for $modelName")
             }
         );
 
@@ -40,33 +43,35 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            DiscordServiceProvider::class,
             ConnectorServiceProvider::class,
             EveapiServiceProvider::class,
             AuthenticationServiceProvider::class,
+            BroadcastHubServiceProvider::class,
+            TribeServiceProvider::class,
+            DiscordServiceProvider::class,
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function defineEnvironment($app)
     {
-        config(['app.debug' => true]);
 
         $app['router']->aliasMiddleware('auth', Authenticate::class);
 
-        // Use test User model for users provider
-        $app['config']->set('auth.providers.users.model', User::class);
+        config(['app.debug' => true]);
 
-        $app['config']->set('cache.prefix', 'seatplus_tests---');
+        tap($app->make('config'), function (Repository $config) {
 
+            $config->set('app.debug', true);
+            $config->set('app.env', 'testing');
+            $config->set('cache.prefix', 'seatplus_tests---');
 
-        //Setup Inertia for package development
-        /*config()->set('inertia.testing.page_paths', array_merge(
-            config()->get('inertia.testing.page_paths', []),
-            [
-                realpath(__DIR__ . '/../src/resources/js/Pages'),
-                realpath(__DIR__ . '/../src/resources/js/Shared')
-            ],
-        ));*/
+            // Use test User model for users provider
+            $config->set('auth.providers.users.model', User::class);
+
+            // set discord bot token
+            $config->set('services.discord.bot_token', 'token');
+        });
+
     }
 
     /**

@@ -8,65 +8,62 @@ use Seatplus\Discord\Discord;
 
 class UpdateUsersNick
 {
+    private Collection $users;
+
+    private ?string $prefix;
+
+    private ?string $suffix;
+
+    private bool $has_ticker;
+
+    private bool $has_error = false;
+
     public function __construct(
-        private string $guild_id,
-        private Collection $users,
-        private ?string $prefix = null,
-        private ?string $suffix = null,
-        private bool $has_ticker = false,
-        private bool $has_error = false,
-    )
-    {
-        $this->guild_id = Discord::getGuildId();
+
+    ) {
         $this->users = Discord::users();
 
         $settings = Discord::getSettings();
 
         $this->prefix = $settings->getValue('prefix');
         $this->suffix = $settings->getValue('suffix');
-
         $this->has_ticker = $settings->getValue('ticker') ?? false;
     }
 
     public function execute()
     {
 
-        $this->users->each(function (User $user) {
-
-            try {
-                // handle the user
-                $this->handleUser($user);
-            } catch (\Exception $e) {
-                // log the exception
-                report($e);
-
-                $this->setHasError();
-
-                // skip the user
-                return;
-            }
-
-
-        });
+        $this->users->each(fn (User $user) => $this->handleUser($user));
     }
 
     private function handleUser(User $user): void
     {
 
-        $ticker = null;
+        try {
+            $ticker = null;
 
-        if($this->has_ticker) {
-            /** @phpstan-ignore-next-line */
-            $ticker = $user->seatplusUser->main_character->corporation->ticker;
+            if ($this->has_ticker) {
+                /** @phpstan-ignore-next-line */
+                $ticker = $user->seatplusUser->main_character->corporation->ticker;
+            }
+
+            $action = (new ApplyNickPreAndPostFixToMember($user->connector_id));
+
+            $action->execute(
+                nick_pre_fix: $this->prefix,
+                suffix: $this->suffix,
+                ticker: $ticker
+            );
+        } catch (\Exception $e) {
+            // log the exception
+            report($e);
+
+            $this->setHasError();
+
+            // skip the user
+            return;
         }
 
-        $action = (new ApplyNickPreAndPostFixToMember($this->guild_id, $user->connector_id));
-
-        $action->execute(
-            nick_pre_fix: $this->prefix,
-            suffix: $this->suffix,
-            ticker: $ticker
-        );
     }
 
     public function hasError(): bool
@@ -78,5 +75,4 @@ class UpdateUsersNick
     {
         $this->has_error = true;
     }
-
 }

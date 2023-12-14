@@ -1,11 +1,9 @@
 <?php
 
 use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Contracts\Provider;
 use Seatplus\Discord\Discord;
 
 beforeEach(function () {
-
 
 });
 

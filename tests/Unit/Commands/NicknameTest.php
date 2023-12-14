@@ -2,7 +2,7 @@
 
 it('runs the command without error', function () {
 
-    $this->mock(\Seatplus\Discord\Services\Members\UpdateUsersNick::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(\Seatplus\Discord\Services\Members\UpdateUsersNick::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('execute')
             ->once();
@@ -21,7 +21,7 @@ it('runs the command without error', function () {
 
 it('runs the command with error', function () {
 
-    $this->mock(\Seatplus\Discord\Services\Members\UpdateUsersNick::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(\Seatplus\Discord\Services\Members\UpdateUsersNick::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('execute')
             ->once();

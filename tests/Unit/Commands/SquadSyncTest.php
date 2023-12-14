@@ -19,18 +19,18 @@ beforeEach(function () {
 
 it('runs the command without error', function () {
 
-    $this->mock(BuildRoleControlGroupMap::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(BuildRoleControlGroupMap::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('execute')
             ->once()
             ->andReturn([
-                'test' => '123'
+                'test' => '123',
             ]);
 
     });
 
     // Create Discord User
-    $user = \Illuminate\Support\Facades\Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = \Illuminate\Support\Facades\Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     $discord_user = \Seatplus\Connector\Models\User::create([
         'user_id' => $user->id,
@@ -38,12 +38,12 @@ it('runs the command without error', function () {
         'connector_id' => '123',
     ]);
 
-    $this->mock(\Seatplus\Discord\Services\Roles\AssignRolesToUser::class, function (\Mockery\MockInterface $mock) use ($discord_user) {
+    $this->mock(\Seatplus\Discord\Services\Roles\AssignRolesToUser::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('setRoleMappings')
             ->once()
             ->with([
-                'test' => '123'
+                'test' => '123',
             ])
             ->andReturn($mock
                 ->shouldReceive('execute')
@@ -61,33 +61,33 @@ it('runs the command without error', function () {
 
 it('fails if role mapping throws error', function () {
 
-        $this->mock(BuildRoleControlGroupMap::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(BuildRoleControlGroupMap::class, function (Mockery\MockInterface $mock) {
 
-            $mock->shouldReceive('execute')
-                ->once()
-                ->andThrow(new \Exception('test'));
+        $mock->shouldReceive('execute')
+            ->once()
+            ->andThrow(new \Exception('test'));
 
-        });
+    });
 
-        $this->artisan(SquadSyncCommand::class)
-            ->expectsOutput('There was an error creating the role mappings, check the logs!')
-            ->assertFailed();
+    $this->artisan(SquadSyncCommand::class)
+        ->expectsOutput('There was an error creating the role mappings, check the logs!')
+        ->assertFailed();
 });
 
 it('has errors if assignRolesToUser throws error', function () {
 
-    $this->mock(BuildRoleControlGroupMap::class, function (\Mockery\MockInterface $mock) {
+    $this->mock(BuildRoleControlGroupMap::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('execute')
             ->once()
             ->andReturn([
-                'test' => '123'
+                'test' => '123',
             ]);
 
     });
 
     // Create Discord User
-    $user = \Illuminate\Support\Facades\Event::fakeFor(fn() => \Seatplus\Auth\Models\User::factory()->create());
+    $user = \Illuminate\Support\Facades\Event::fakeFor(fn () => \Seatplus\Auth\Models\User::factory()->create());
 
     $discord_user = \Seatplus\Connector\Models\User::create([
         'user_id' => $user->id,
@@ -95,12 +95,12 @@ it('has errors if assignRolesToUser throws error', function () {
         'connector_id' => '123',
     ]);
 
-    $this->mock(\Seatplus\Discord\Services\Roles\AssignRolesToUser::class, function (\Mockery\MockInterface $mock) use ($discord_user) {
+    $this->mock(\Seatplus\Discord\Services\Roles\AssignRolesToUser::class, function (Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('setRoleMappings')
             ->once()
             ->with([
-                'test' => '123'
+                'test' => '123',
             ])
             ->andReturn($mock
                 ->shouldReceive('execute')
@@ -114,5 +114,3 @@ it('has errors if assignRolesToUser throws error', function () {
         ->expectsOutput('There was an error updating the squads, check the logs!')
         ->assertFailed();
 });
-
-

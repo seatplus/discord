@@ -2,18 +2,21 @@
 
 namespace Seatplus\Discord\Services\Members;
 
+use Seatplus\Discord\Client\Guild;
+
 class GetMemberAttribute
 {
-    private \Seatplus\Discord\Client\Member $client;
+    private Guild $guild_client;
 
-    public function __construct($guild_id, $user_id)
-    {
-        $this->client = new \Seatplus\Discord\Client\Member($guild_id, $user_id);
+    public function __construct(
+        private string $user_id
+    ) {
+        $this->guild_client = app(Guild::class);
     }
 
     public function roles(): array
     {
-        return $this->get('roles');
+        return $this->get('roles') ?? [];
     }
 
     public function nick(): string
@@ -23,7 +26,6 @@ class GetMemberAttribute
 
     private function get(string $key): array|string|bool|int|null
     {
-        return $this->client->get($key);
+        return $this->guild_client->getGuildMember($this->user_id, $key);
     }
-
 }

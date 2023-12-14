@@ -46,7 +46,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function getDiscordMember() : array
+function getDiscordMember(): array
 {
     return [
         'id' => '1',

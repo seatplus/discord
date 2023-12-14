@@ -5,7 +5,7 @@ namespace Seatplus\Discord\Http\Actions;
 use Laravel\Socialite\Facades\Socialite;
 use Seatplus\Connector\Models\Settings;
 use Seatplus\Connector\Models\User;
-use Seatplus\Discord\Client\Member;
+use Seatplus\Discord\Client\Guild;
 use Seatplus\Discord\Discord;
 
 class HandleSocialiteCallbackAction
@@ -23,7 +23,7 @@ class HandleSocialiteCallbackAction
         /** @var \SocialiteProviders\Manager\OAuth2\User $socialite_user */
         $socialite_user = Socialite::driver('discord')->user();
 
-        if(!$this->guild_id) {
+        if (! $this->guild_id) {
             $this->persistGuildInformation($socialite_user);
         }
 
@@ -33,7 +33,7 @@ class HandleSocialiteCallbackAction
             ->first();
 
         // if user is already registered remove the old user
-        if($user && $user->connector_id !== $socialite_user->getId()) {
+        if ($user && $user->connector_id !== $socialite_user->getId()) {
             $this->kickUser($user);
         }
 
@@ -54,15 +54,14 @@ class HandleSocialiteCallbackAction
         ], [
             'settings' => [
                 'guild_id' => data_get($accessTokenResponseBody, 'guild.id'),
-                'owner_id' => data_get($accessTokenResponseBody, 'guild.owner_id')
+                'owner_id' => data_get($accessTokenResponseBody, 'guild.owner_id'),
             ],
         ]);
     }
 
     private function kickUser(User $user)
     {
-        $client = new Member($this->guild_id, $user->connector_id);
-        $client->delete();
-    }
 
+        app(Guild::class)->removeGuildMember($user->connector_id);
+    }
 }
