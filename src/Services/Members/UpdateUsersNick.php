@@ -8,7 +8,6 @@ use Seatplus\Discord\Discord;
 
 class UpdateUsersNick
 {
-
     private Collection $users;
 
     private ?string $prefix;
